@@ -639,8 +639,8 @@ static struct platform_device bcm2708_bsc1_device = {
 };
 
 static struct i2c_gpio_platform_data i2c_gpio_0_data = {
-	.sda_pin = 16,
-	.scl_pin = 25,
+	.sda_pin = 2,
+	.scl_pin = 3,
 };
 
 static struct platform_device i2c_gpio_0 = {
@@ -652,8 +652,8 @@ static struct platform_device i2c_gpio_0 = {
 };
 
 static struct i2c_gpio_platform_data i2c_gpio_1_data = {
-	.sda_pin = 2,
-	.scl_pin = 3,
+	.sda_pin = 16,
+	.scl_pin = 25,
 };
 
 static struct platform_device i2c_gpio_1 = {
