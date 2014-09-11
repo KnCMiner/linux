@@ -33,6 +33,7 @@
 #include <linux/module.h>
 #include <linux/spi/spi.h>
 #include <linux/w1-gpio.h>
+#include <linux/i2c-gpio.h>
 
 #include <linux/version.h>
 #include <linux/clkdev.h>
@@ -637,6 +638,32 @@ static struct platform_device bcm2708_bsc1_device = {
 	.resource = bcm2708_bsc1_resources,
 };
 
+static struct i2c_gpio_platform_data i2c_gpio_0_data = {
+	.sda_pin = 16,
+	.scl_pin = 25,
+};
+
+static struct platform_device i2c_gpio_0 = {
+	.name = "i2c-gpio",
+	.id = 0,
+	.dev = {
+		.platform_data	= &i2c_gpio_0_data,
+	},
+};
+
+static struct i2c_gpio_platform_data i2c_gpio_1_data = {
+	.sda_pin = 2,
+	.scl_pin = 3,
+};
+
+static struct platform_device i2c_gpio_1 = {
+	.name = "i2c-gpio",
+	.id = 1,
+	.dev = {
+		.platform_data	= &i2c_gpio_1_data,
+	},
+};
+
 static struct platform_device bcm2835_hwmon_device = {
 	.name = "bcm2835_hwmon",
 };
@@ -863,14 +890,17 @@ void __init bcm2708_init(void)
 
 	bcm_register_device(&bcm2708_spi_device);
 
-	if (vc_i2c_override) {
-		bcm_register_device(&bcm2708_bsc0_device);
-		bcm_register_device(&bcm2708_bsc1_device);
-	} else if ((boardrev & 0xffffff) == 0x2 || (boardrev & 0xffffff) == 0x3) {
-		bcm_register_device(&bcm2708_bsc0_device);
-	} else {
-		bcm_register_device(&bcm2708_bsc1_device);
-	}
+	/* if (vc_i2c_override) { */
+	/* 	bcm_register_device(&bcm2708_bsc0_device); */
+	/* 	bcm_register_device(&bcm2708_bsc1_device); */
+	/* } else if ((boardrev & 0xffffff) == 0x2 || (boardrev & 0xffffff) == 0x3) { */
+	/* 	bcm_register_device(&bcm2708_bsc0_device); */
+	/* } else { */
+	/* 	bcm_register_device(&bcm2708_bsc1_device); */
+	/* } */
+
+	bcm_register_device(&i2c_gpio_0);
+	bcm_register_device(&i2c_gpio_1);
 
 	bcm_register_device(&bcm2835_hwmon_device);
 	bcm_register_device(&bcm2835_thermal_device);
