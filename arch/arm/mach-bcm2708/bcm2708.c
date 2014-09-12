@@ -34,6 +34,7 @@
 #include <linux/spi/spi.h>
 #include <linux/w1-gpio.h>
 #include <linux/i2c-gpio.h>
+#include <linux/i2c/pca954x.h>
 
 #include <linux/version.h>
 #include <linux/clkdev.h>
@@ -664,6 +665,50 @@ static struct platform_device i2c_gpio_1 = {
 	},
 };
 
+static struct pca954x_platform_mode i2c_mux_channels[] = {
+	{
+		.adap_id = 2,
+		.deselect_on_exit = 1,
+		/* .class = 0, */
+	},
+	{
+		.adap_id = 3,
+		.deselect_on_exit = 1,
+		/* .class = 0, */
+	},
+	{
+		.adap_id = 4,
+		.deselect_on_exit = 1,
+		/* .class = 0, */
+	},
+	{
+		.adap_id = 5,
+		.deselect_on_exit = 1,
+		/* .class = 0, */
+	},
+	{
+		.adap_id = 6,
+		.deselect_on_exit = 1,
+		/* .class = 0, */
+	},
+	{
+		.adap_id = 7,
+		.deselect_on_exit = 1,
+		/* .class = 0, */
+	},
+};
+
+static struct pca954x_platform_data i2c_mux_data = {
+	.modes = i2c_mux_channels,
+	.num_modes = ARRAY_SIZE(i2c_mux_channels),
+};
+
+static struct i2c_board_info i2c_mux = {
+	.type = "pca9547",
+	.addr = 0x70,
+	.platform_data = &i2c_mux_data,
+};
+
 static struct platform_device bcm2835_hwmon_device = {
 	.name = "bcm2835_hwmon",
 };
@@ -901,6 +946,7 @@ void __init bcm2708_init(void)
 
 	bcm_register_device(&i2c_gpio_0);
 	bcm_register_device(&i2c_gpio_1);
+	i2c_register_board_info(0, &i2c_mux, 1);
 
 	bcm_register_device(&bcm2835_hwmon_device);
 	bcm_register_device(&bcm2835_thermal_device);
