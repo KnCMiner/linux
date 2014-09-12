@@ -709,6 +709,33 @@ static struct i2c_board_info i2c_mux = {
 	.platform_data = &i2c_mux_data,
 };
 
+static struct i2c_board_info __initdata eeprom_ioboard_devices[] = {
+	{
+		I2C_BOARD_INFO("24c256", 0x54)
+	},
+};
+
+static struct i2c_board_info __initdata eeprom_miner_devices[] = {
+	{
+		I2C_BOARD_INFO("24c256", 0x50)
+	},
+	{
+		I2C_BOARD_INFO("24c256", 0x50)
+	},
+	{
+		I2C_BOARD_INFO("24c256", 0x50)
+	},
+	{
+		I2C_BOARD_INFO("24c256", 0x50)
+	},
+	{
+		I2C_BOARD_INFO("24c256", 0x50)
+	},
+	{
+		I2C_BOARD_INFO("24c256", 0x50)
+	},
+};
+
 static struct platform_device bcm2835_hwmon_device = {
 	.name = "bcm2835_hwmon",
 };
@@ -946,7 +973,13 @@ void __init bcm2708_init(void)
 
 	bcm_register_device(&i2c_gpio_0);
 	bcm_register_device(&i2c_gpio_1);
+
+	i2c_register_board_info(1, eeprom_ioboard_devices, ARRAY_SIZE(eeprom_ioboard_devices));
+
 	i2c_register_board_info(0, &i2c_mux, 1);
+
+	for (i = 0 ; i < ARRAY_SIZE(eeprom_miner_devices) ; i++)
+		i2c_register_board_info(2 + i, &eeprom_miner_devices[i], 1);
 
 	bcm_register_device(&bcm2835_hwmon_device);
 	bcm_register_device(&bcm2835_thermal_device);
